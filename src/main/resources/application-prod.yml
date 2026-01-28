@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/notifyhub
+    username: notifyhub_app
+    password: ${DB_PASSWORD:secret}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+notifyhub:
+  default-channel: push
+  rate-limit: 200

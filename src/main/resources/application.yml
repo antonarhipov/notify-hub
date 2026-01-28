@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: notify-hub
+  datasource:
+    url: jdbc:h2:mem:notifyhub
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+  sql:
+    init:
+      mode: always
+
+notifyhub:
+  default-channel: email
+  rate-limit: 50
+  retry:
+    max-attempts: 3
+    delay-millis: 1000
+  audit:
+    enabled: false
