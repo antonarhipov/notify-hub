@@ -61,7 +61,7 @@ public class NotificationDispatcher {
     private final NotificationLogRepository logRepository;
 
     //DEMO Demonstrates bean navigation - gutter icon shows 3 implementations
-    public NotificationDispatcher(NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
+    public NotificationDispatcher(/*@Qualifier("pushNotificationSender")*/ NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
         this.sender = sender;
         this.templateResolver = templateResolver;
         this.logRepository = logRepository;
