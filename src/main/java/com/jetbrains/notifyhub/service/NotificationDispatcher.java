@@ -6,6 +6,8 @@ import com.jetbrains.notifyhub.model.NotificationResult;
 import com.jetbrains.notifyhub.repository.NotificationLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +39,7 @@ import java.util.UUID;
  *    - IDE understands Lombok-generated constructor
  */
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Slf4j
 public class NotificationDispatcher {
 
@@ -53,10 +55,17 @@ public class NotificationDispatcher {
     @Value("${notifyhub.retry.max-attempts:3}")
     private int maxRetryAttempts;
 
-    //DEMO Demonstrates bean navigation - gutter icon shows 3 implementations
-    private final List<NotificationSender> senders;
+//    private final List<NotificationSender> senders;
+    private final NotificationSender sender;
     private final TemplateResolver templateResolver;
     private final NotificationLogRepository logRepository;
+
+    //DEMO Demonstrates bean navigation - gutter icon shows 3 implementations
+    public NotificationDispatcher(NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
+        this.sender = sender;
+        this.templateResolver = templateResolver;
+        this.logRepository = logRepository;
+    }
 
     /**
      * Dispatch a notification to the appropriate channel.
@@ -67,7 +76,7 @@ public class NotificationDispatcher {
      */
     public NotificationResult dispatch(Notification notification) {
         String notificationId = UUID.randomUUID().toString();
-        //DEMO Set breakpoint on the next line to inspect @Value fields in debugger
+
         log.info("Dispatching notification: id={}, recipient={}, template={}",
                 notificationId, notification.recipient(), notification.templateCode());
 
@@ -81,11 +90,11 @@ public class NotificationDispatcher {
                     channel, defaultChannel, rateLimit, maxRetryAttempts);
 
             //DEMO Bean Navigation - Click gutter icon on 'senders' to see all 3 implementations
-            NotificationSender sender = senders.stream()
-                    .filter(s -> s.supports(channel))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "No sender found for channel: " + channel));
+//            NotificationSender sender = senders.stream()
+//                    .filter(s -> s.supports(channel))
+//                    .findFirst()
+//                    .orElseThrow(() -> new IllegalArgumentException(
+//                            "No sender found for channel: " + channel));
 
             log.info("Selected sender: {} for channel: {}", sender.getClass().getSimpleName(), channel);
 

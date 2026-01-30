@@ -2,6 +2,7 @@ package com.jetbrains.notifyhub.config;
 
 import com.jetbrains.notifyhub.audit.NotificationAuditor;
 import com.jetbrains.notifyhub.service.NotificationSender;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +41,7 @@ public class NotificationConfig {
      */
     @Bean
     @ConditionalOnProperty(name = "notifyhub.audit.enabled", havingValue = "true")
-    public NotificationAuditor auditor(NotificationSender sender) {
+    public NotificationAuditor auditor(@Qualifier("emailNotificationSender") NotificationSender sender) {
         return new NotificationAuditor(sender);
     }
 }
