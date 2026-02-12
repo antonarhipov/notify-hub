@@ -1,6 +1,6 @@
 -- NotificationTemplate table for storing notification templates
 CREATE TABLE IF NOT EXISTS notification_template (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     channel VARCHAR(50) NOT NULL,
     template_code VARCHAR(100) NOT NULL,
     subject_template VARCHAR(500),
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS notification_template (
 
 -- NotificationLog table for audit trail
 CREATE TABLE IF NOT EXISTS notification_log (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     notification_id VARCHAR(100) NOT NULL,
     recipient VARCHAR(255) NOT NULL,
     channel VARCHAR(50) NOT NULL,

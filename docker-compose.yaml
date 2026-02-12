@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: notifyhub-postgres
+    environment:
+      POSTGRES_DB: notifyhub
+      POSTGRES_USER: notifyhub_app
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - notifyhub-data:/var/lib/postgresql/data
+
+volumes:
+  notifyhub-data:
