@@ -1,4 +1,4 @@
-package com.jetbrains.notifyhub;
+package com.example.notifyhub;
 
 import org.junit.jupiter.api.Test;
 

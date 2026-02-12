@@ -21,7 +21,7 @@ NotifyHub demonstrates:
 ## Project Structure
 
 ```
-com.jetbrains.notifyhub/
+com.example.notifyhub/
 ├── model/              # Domain entities and DTOs
 │   ├── Notification.java          # Request DTO (record)
 │   ├── NotificationResult.java    # Response DTO (record)

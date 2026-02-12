@@ -1,4 +1,4 @@
-package com.jetbrains.notifyhub;
+package com.example.notifyhub;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

@@ -1,8 +1,8 @@
-package com.jetbrains.notifyhub.controller;
+package com.example.notifyhub.api;
 
-import com.jetbrains.notifyhub.model.Notification;
-import com.jetbrains.notifyhub.model.NotificationResult;
-import com.jetbrains.notifyhub.service.NotificationDispatcher;
+import com.example.notifyhub.model.Notification;
+import com.example.notifyhub.model.NotificationResult;
+import com.example.notifyhub.service.NotificationDispatcher;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

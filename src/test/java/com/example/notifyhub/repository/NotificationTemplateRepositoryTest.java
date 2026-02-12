@@ -1,7 +1,7 @@
-package com.jetbrains.notifyhub.repository;
+package com.example.notifyhub.repository;
 
-import com.jetbrains.notifyhub.IntegrationTestBase;
-import com.jetbrains.notifyhub.model.NotificationTemplate;
+import com.example.notifyhub.IntegrationTestBase;
+import com.example.notifyhub.model.NotificationTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
-package com.jetbrains.notifyhub.service;
+package com.example.notifyhub.service;
 
-import com.jetbrains.notifyhub.model.Notification;
+import com.example.notifyhub.model.Notification;
 
 /**
  * Interface for notification sending implementations.

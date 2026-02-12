@@ -1,6 +1,6 @@
-package com.jetbrains.notifyhub.repository;
+package com.example.notifyhub.repository;
 
-import com.jetbrains.notifyhub.model.NotificationLog;
+import com.example.notifyhub.model.NotificationLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

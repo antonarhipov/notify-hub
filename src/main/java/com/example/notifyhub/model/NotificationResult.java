@@ -1,4 +1,4 @@
-package com.jetbrains.notifyhub.model;
+package com.example.notifyhub.model;
 
 /**
  * Response DTO for notification sending operations.

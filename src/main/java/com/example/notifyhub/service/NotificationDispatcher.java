@@ -1,17 +1,14 @@
-package com.jetbrains.notifyhub.service;
+package com.example.notifyhub.service;
 
-import com.jetbrains.notifyhub.model.Notification;
-import com.jetbrains.notifyhub.model.NotificationLog;
-import com.jetbrains.notifyhub.model.NotificationResult;
-import com.jetbrains.notifyhub.repository.NotificationLogRepository;
-import lombok.RequiredArgsConstructor;
+import com.example.notifyhub.model.Notification;
+import com.example.notifyhub.model.NotificationLog;
+import com.example.notifyhub.model.NotificationResult;
+import com.example.notifyhub.repository.NotificationLogRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -31,7 +28,7 @@ public class NotificationDispatcher {
     private final TemplateResolver templateResolver;
     private final NotificationLogRepository logRepository;
 
-    public NotificationDispatcher(NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
+    public NotificationDispatcher(@Qualifier("emailNotificationSender") NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
         this.sender = sender;
         this.templateResolver = templateResolver;
         this.logRepository = logRepository;

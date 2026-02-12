@@ -1,4 +1,4 @@
-package com.jetbrains.notifyhub.model;
+package com.example.notifyhub.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

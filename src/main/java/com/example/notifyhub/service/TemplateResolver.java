@@ -1,7 +1,7 @@
-package com.jetbrains.notifyhub.service;
+package com.example.notifyhub.service;
 
-import com.jetbrains.notifyhub.model.NotificationTemplate;
-import com.jetbrains.notifyhub.repository.NotificationTemplateRepository;
+import com.example.notifyhub.model.NotificationTemplate;
+import com.example.notifyhub.repository.NotificationTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
