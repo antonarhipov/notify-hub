@@ -14,38 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * PRIMARY DEMO FILE for NotifyHub application.
- *
- * Demonstrates THREE key IntelliJ IDEA features:
- *
- * 1. BEAN NAVIGATION:
- *    - Gutter icon on List<NotificationSender> shows all 3 implementations
- *    - Click to navigate to EmailNotificationSender, SmsNotificationSender, PushNotificationSender
- *    - Shows @Primary handling on PushNotificationSender
- *
- * 2. DEBUGGER WITH SPRING INSIGHTS:
- *    - Set breakpoint in dispatch() method
- *    - Run with prod profile: --spring.profiles.active=prod
- *    - In debugger, @Value fields show resolved values:
- *      * defaultChannel = "push" (from application-prod.yml, NOT "email" from base)
- *      * rateLimit = 200 (from application-prod.yml, NOT 50 from base)
- *      * maxRetryAttempts = 3 (from application.yml, no override)
- *    - Can evaluate expressions: this.defaultChannel returns "push"
- *
- * 3. LOMBOK @RequiredArgsConstructor:
- *    - No visible constructor in code
- *    - Gutter icons on fields show dependency injection
- *    - IDE understands Lombok-generated constructor
- */
 @Service
-//@RequiredArgsConstructor
 @Slf4j
 public class NotificationDispatcher {
 
-    //DEMO Debugger Insights - Set breakpoint at line 70 and inspect these @Value fields in debugger
-    //DEMO With prod profile: defaultChannel="push", rateLimit=200 (from application-prod.yml)
-    //DEMO With dev profile: defaultChannel="email", rateLimit=50 (from application.yml)
     @Value("${notifyhub.default-channel:push}")
     private String defaultChannel;
 
@@ -55,13 +27,11 @@ public class NotificationDispatcher {
     @Value("${notifyhub.retry.max-attempts:3}")
     private int maxRetryAttempts;
 
-//    private final List<NotificationSender> senders;
     private final NotificationSender sender;
     private final TemplateResolver templateResolver;
     private final NotificationLogRepository logRepository;
 
-    //DEMO Demonstrates bean navigation - gutter icon shows 3 implementations
-    public NotificationDispatcher(@Qualifier("pushNotificationSender") NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
+    public NotificationDispatcher(NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
         this.sender = sender;
         this.templateResolver = templateResolver;
         this.logRepository = logRepository;
@@ -88,13 +58,6 @@ public class NotificationDispatcher {
 
             log.debug("Using channel: {} (default: {}, rate limit: {}, max retries: {})",
                     channel, defaultChannel, rateLimit, maxRetryAttempts);
-
-            //DEMO Bean Navigation - Click gutter icon on 'senders' to see all 3 implementations
-//            NotificationSender sender = senders.stream()
-//                    .filter(s -> s.supports(channel))
-//                    .findFirst()
-//                    .orElseThrow(() -> new IllegalArgumentException(
-//                            "No sender found for channel: " + channel));
 
             log.info("Selected sender: {} for channel: {}", sender.getClass().getSimpleName(), channel);
 
