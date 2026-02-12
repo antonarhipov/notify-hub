@@ -28,7 +28,7 @@ public class NotificationDispatcher {
     private final TemplateResolver templateResolver;
     private final NotificationLogRepository logRepository;
 
-    public NotificationDispatcher(@Qualifier("emailNotificationSender") NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
+    public NotificationDispatcher(NotificationSender sender, TemplateResolver templateResolver, NotificationLogRepository logRepository) {
         this.sender = sender;
         this.templateResolver = templateResolver;
         this.logRepository = logRepository;
