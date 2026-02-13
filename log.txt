@@ -1,0 +1,50 @@
+/Users/Library/Java/JavaVirtualMachines/corretto-21.0.5/Contents/Home/bin/java -Dnotifyhub.rate-limit=777 -XX:TieredStopAtLevel=1 -Dspring.profiles.active=dev -Dspring.output.ansi.enabled=always -Dcom.sun.management.jmxremote -Dspring.jmx.enabled=true -Dspring.liveBeansView.mbeanDomain -Dspring.application.admin.enabled=true -Dmanagement.endpoints.jmx.exposure.include=* com.example.notifyhub.NotifyHubApplication
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-02-13T14:03:55.367+02:00  INFO 72619 --- [notify-hub] [main] c.e.notifyhub.NotifyHubApplication       : Starting NotifyHubApplication using Java 21.0.5 with PID 72619
+2026-02-13T14:03:55.368+02:00  INFO 72619 --- [notify-hub] [main] c.e.notifyhub.NotifyHubApplication       : The following 1 profile is active: "dev"
+2026-02-13T14:03:55.748+02:00  INFO 72619 --- [notify-hub] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-13T14:03:55.753+02:00  INFO 72619 --- [notify-hub] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-13T14:03:55.753+02:00  INFO 72619 --- [notify-hub] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-13T14:03:55.767+02:00  INFO 72619 --- [notify-hub] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 381 ms
+2026-02-13T14:03:55.802+02:00  INFO 72619 --- [notify-hub] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-13T14:03:55.897+02:00  INFO 72619 --- [notify-hub] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:notifyhub user=SA
+2026-02-13T14:03:55.898+02:00  INFO 72619 --- [notify-hub] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-13T14:03:55.940+02:00  INFO 72619 --- [notify-hub] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-13T14:03:55.967+02:00  INFO 72619 --- [notify-hub] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-13T14:03:56.136+02:00  INFO 72619 --- [notify-hub] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-13T14:03:56.540+02:00  INFO 72619 --- [notify-hub] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-13T14:03:56.551+02:00  INFO 72619 --- [notify-hub] [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-13T14:03:56.552+02:00  INFO 72619 --- [notify-hub] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-13T14:03:56.553+02:00  INFO 72619 --- [notify-hub] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-13T14:03:56.554+02:00  INFO 72619 --- [notify-hub] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-02-13T14:03:56.556+02:00  INFO 72619 --- [notify-hub] [main] .s.b.a.l.ConditionEvaluationReportLogger :
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-02-13T14:03:56.561+02:00 ERROR 72619 --- [notify-hub] [main] o.s.b.d.LoggingFailureAnalysisReporter   :
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 0 of constructor in com.example.notifyhub.service.NotificationDispatcher required a single bean, but 3 were found:
+	- emailNotificationSender: defined in file [com/example/notifyhub/service/EmailNotificationSender.class]
+	- pushNotificationSender: defined in file [com/example/notifyhub/service/PushNotificationSender.class]
+	- smsNotificationSender: defined in file [com/example/notifyhub/service/SmsNotificationSender.class]
+
+This may be due to missing parameter name information
+
+Action:
+
+Consider marking one of the beans as @Primary, updating the consumer to accept multiple beans, or using @Qualifier to identify the bean that should be consumed
+
