@@ -46,15 +46,9 @@ public class NotificationDispatcher {
         log.info("Dispatching notification: id={}", messageId);
 
         try {
-            // Send notification
-            sender.send(notification);
-
-            // Log success
-            NotificationLog logEntry = new NotificationLog(messageId, notification, "SUCCESS");
-            logRepository.save(logEntry);
+            sender.send(notification.withChannel(defaultChannel));
 
             return NotificationResult.success(messageId);
-
         } catch (Exception e) {
             log.error("Failed to dispatch notification: id={}, error={}", messageId, e.getMessage(), e);
 
