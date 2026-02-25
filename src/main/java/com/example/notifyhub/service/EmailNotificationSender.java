@@ -19,6 +19,11 @@ public class EmailNotificationSender implements NotificationSender {
 
     @Override
     public void send(Notification notification) {
+        // Validate that the available sender supports the requested channel
+        if (!supports(notification.channel())) {
+            throw new ChannelNotSupportedException("No sender available for channel: " + notification.channel());
+        }
+
         log.info("Sending EMAIL notification to: {} with template: {}",
                 notification.recipient(), notification.templateCode());
 
