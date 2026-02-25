@@ -36,7 +36,6 @@ public class NotificationDispatcher {
 
     /**
      * Dispatch a notification to the appropriate channel.
-     * Set breakpoint here to see @Value field resolution in debugger.
      *
      * @param notification the notification to send
      * @return the result of the notification operation
@@ -48,7 +47,7 @@ public class NotificationDispatcher {
 
         try {
             // Send notification
-            sender.send(notification.withChannel(defaultChannel));
+            sender.send(notification);
 
             // Log success
             NotificationLog logEntry = new NotificationLog(messageId, notification, "SUCCESS");
