@@ -15,7 +15,7 @@ import java.util.UUID;
 @Slf4j
 public class NotificationDispatcher {
 
-    @Value("${notifyhub.default-channel:push}")
+    @Value("${notifyhub.default-channel:email}")
     private String defaultChannel;
 
     @Value("${notifyhub.rate-limit:50}")
@@ -44,32 +44,20 @@ public class NotificationDispatcher {
     public NotificationResult dispatch(Notification notification) {
         String messageId = UUID.randomUUID().toString();
 
-        log.info("Dispatching notification: id={}, recipient={}, template={}",
-                messageId, notification.recipient(), notification.templateCode());
+        log.info("Dispatching notification: id={}", messageId);
 
         try {
-            // BUG! inverted null check
-            String channel = notification.channel() == null
-                    ? notification.channel()
-                    : defaultChannel;
-
             // Send notification
-            sender.send(notification);
+            sender.send(notification.withChannel(defaultChannel));
 
             // Log success
-            NotificationLog logEntry = new NotificationLog(
-                    messageId,
-                    notification,
-                    channel,
-                    "SUCCESS"
-            );
+            NotificationLog logEntry = new NotificationLog(messageId, notification, "SUCCESS");
             logRepository.save(logEntry);
 
             return NotificationResult.success(messageId);
 
         } catch (Exception e) {
-            log.error("Failed to dispatch notification: id={}, error={}",
-                    messageId, e.getMessage(), e);
+            log.error("Failed to dispatch notification: id={}, error={}", messageId, e.getMessage(), e);
 
             return NotificationResult.failure("Failed to send notification: " + e.getMessage());
         }

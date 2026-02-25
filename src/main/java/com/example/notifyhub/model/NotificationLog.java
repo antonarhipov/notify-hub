@@ -51,11 +51,10 @@ public class NotificationLog {
         // JPA requires no-arg constructor
     }
 
-    public NotificationLog(String notificationId, Notification notification, String channel,
-                           String status) {
+    public NotificationLog(String notificationId, Notification notification, String status) {
         this.notificationId = notificationId;
         this.recipient = notification.recipient();
-        this.channel = channel;
+        this.channel = notification.channel();
         this.templateCode = notification.templateCode();
         this.status = status;
         this.sentAt = LocalDateTime.now();

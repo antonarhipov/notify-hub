@@ -16,7 +16,7 @@ spring:
       mode: always
 
 notifyhub:
-  default-channel: email
+#  default-channel: email
   rate-limit: 50
   retry:
     max-attempts: 3

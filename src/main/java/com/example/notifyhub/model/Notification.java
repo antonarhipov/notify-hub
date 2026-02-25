@@ -32,4 +32,15 @@ public record Notification(
             payload = Map.of();
         }
     }
+
+    /**
+     * Returns a new Notification instance with the specified channel value.
+     *
+     * @param channel the new channel value
+     * @return a new Notification with the updated channel
+     */
+    public Notification withChannel(String channel) {
+        return new Notification(recipient, channel, templateCode, locale, payload);
+    }
+
 }
