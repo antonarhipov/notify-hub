@@ -21,7 +21,9 @@ public record Notification(
     @NotNull
     String locale,
 
-    Map<String, Object> payload
+    Map<String, Object> payload,
+
+    Map<String, String> rules
 ) {
     public Notification {
         // Compact constructor for defaults
@@ -30,6 +32,9 @@ public record Notification(
         }
         if (payload == null) {
             payload = Map.of();
+        }
+        if (rules == null) {
+            rules = Map.of();
         }
     }
 
@@ -40,7 +45,7 @@ public record Notification(
      * @return a new Notification with the updated channel
      */
     public Notification withChannel(String channel) {
-        return new Notification(recipient, channel, templateCode, locale, payload);
+        return new Notification(recipient, channel, templateCode, locale, payload, rules);
     }
 
 }

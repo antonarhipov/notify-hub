@@ -31,7 +31,14 @@ public class NotificationController {
      *   "channel": "email",
      *   "templateCode": "welcome",
      *   "locale": "en",
-     *   "payload": {}
+     *   "payload": {},
+     *   "rules": {
+     *     "transform.header": "Important Update",
+     *     "transform.footer": "Sent via NotifyHub",
+     *     "transform.style": "formal",
+     *     "transform.truncate": "disabled",
+     *     "audit.trace": "true"
+     *   }
      * }
      *
      * @param notification the notification request
