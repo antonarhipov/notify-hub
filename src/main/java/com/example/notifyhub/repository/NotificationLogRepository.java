@@ -35,4 +35,26 @@ public interface NotificationLogRepository extends JpaRepository<NotificationLog
         @Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate
     );
+
+    /**
+     * Count processed notifications grouped by status (used for dashboard totals).
+     *
+     * @return rows of {@code [status, count]}
+     */
+    @Query("SELECT l.status, COUNT(l) FROM NotificationLog l GROUP BY l.status")
+    List<Object[]> countGroupByStatus();
+
+    /**
+     * Count processed notifications grouped by channel and status
+     * (used for the dashboard's per-channel breakdown).
+     *
+     * @return rows of {@code [channel, status, count]}
+     */
+    @Query("SELECT l.channel, l.status, COUNT(l) FROM NotificationLog l GROUP BY l.channel, l.status")
+    List<Object[]> countGroupByChannelAndStatus();
+
+    /**
+     * Most recently processed notifications, newest first, for the activity feed.
+     */
+    List<NotificationLog> findTop10ByOrderBySentAtDescIdDesc();
 }

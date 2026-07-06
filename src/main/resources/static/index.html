@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotifyHub · Mission Control</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">
+        <span class="logo">◎</span>
+        <div>
+            <h1>NotifyHub Mission Control</h1>
+            <p class="subtitle">Notification hub operations dashboard</p>
+        </div>
+    </div>
+    <div class="topbar-actions">
+        <span id="status-dot" class="status-dot" title="Live"></span>
+        <span id="last-updated" class="last-updated">—</span>
+        <button id="refresh-btn" class="btn" type="button">Refresh</button>
+    </div>
+</header>
+
+<main class="layout">
+    <section class="panel stats-panel">
+        <h2 class="panel-title">Processed Notifications</h2>
+        <div class="stat-grid">
+            <div class="stat-card total">
+                <span class="stat-label">Total Processed</span>
+                <span class="stat-value" id="stat-total">0</span>
+            </div>
+            <div class="stat-card sent">
+                <span class="stat-label">Sent</span>
+                <span class="stat-value" id="stat-sent">0</span>
+            </div>
+            <div class="stat-card failed">
+                <span class="stat-label">Failed</span>
+                <span class="stat-value" id="stat-failed">0</span>
+            </div>
+            <div class="stat-card blocked">
+                <span class="stat-label">Blocked</span>
+                <span class="stat-value" id="stat-blocked">0</span>
+            </div>
+            <div class="stat-card rate">
+                <span class="stat-label">Success Rate</span>
+                <span class="stat-value" id="stat-rate">0%</span>
+            </div>
+        </div>
+
+        <h3 class="section-title">By Channel</h3>
+        <table class="channel-table">
+            <thead>
+            <tr>
+                <th>Channel</th>
+                <th>Total</th>
+                <th>Sent</th>
+                <th>Failed</th>
+                <th>Blocked</th>
+            </tr>
+            </thead>
+            <tbody id="channel-tbody">
+            <tr class="empty-row">
+                <td colspan="5">No data yet</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3 class="section-title">Recent Activity</h3>
+        <ul class="activity-feed" id="activity-feed">
+            <li class="empty">No notifications processed yet.</li>
+        </ul>
+    </section>
+
+    <section class="panel services-panel">
+        <h2 class="panel-title">Service Controls</h2>
+        <p class="panel-hint">Enable or disable notification services. Disabled
+            services block new notifications for that channel.</p>
+        <div class="service-list" id="service-list">
+            <p class="empty">Loading services…</p>
+        </div>
+    </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

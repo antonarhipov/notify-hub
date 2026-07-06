@@ -1,0 +1,17 @@
+target/
+.git/
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+**/.DS_Store
+.claude/
+.agents/
+.junie/
+.vscode/
+docker-compose*.yaml
+nginx/
+README.md
+log.txt
+demo-test.sh

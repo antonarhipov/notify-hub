@@ -3,10 +3,10 @@ package com.example.notifyhub.service;
 import com.example.notifyhub.model.Notification;
 import com.example.notifyhub.model.NotificationLog;
 import com.example.notifyhub.model.NotificationResult;
+import com.example.notifyhub.model.NotificationStatus;
 import com.example.notifyhub.repository.NotificationLogRepository;
 import com.example.notifyhub.service.transformers.MessageTransformer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,16 +29,16 @@ public class NotificationDispatcher {
     @Value("${notifyhub.retry.max-attempts:3}")
     private int maxRetryAttempts;
 
-    private final NotificationSender sender;
+    private final ChannelService channelService;
     private final TemplateResolver templateResolver;
     private final NotificationLogRepository logRepository;
     private final Map<String, MessageTransformer> transformersByName;
 
-    public NotificationDispatcher(@Qualifier("emailNotificationSender") NotificationSender sender,
+    public NotificationDispatcher(ChannelService channelService,
                                   TemplateResolver templateResolver,
                                   NotificationLogRepository logRepository,
                                   List<MessageTransformer> transformers) {
-        this.sender = sender;
+        this.channelService = channelService;
         this.templateResolver = templateResolver;
         this.logRepository = logRepository;
         this.transformersByName = transformers.stream()
@@ -57,31 +57,78 @@ public class NotificationDispatcher {
      * </ol>
      * The channel is determined solely by the {@code channel} attribute (or the
      * configured default); rules never influence channel selection.
+     * <p>
+     * The target channel service must be enabled in the mission control dashboard;
+     * notifications for a disabled service are recorded as {@link NotificationStatus#BLOCKED}
+     * and not delivered. Every outcome is persisted to the audit log so the dashboard
+     * can report accurate processing statistics.
      *
      * @param notification the notification to send
      * @return the result of the notification operation
      */
     public NotificationResult dispatch(Notification notification) {
         String messageId = UUID.randomUUID().toString();
+        String channel = resolveChannel(notification);
+        Notification routed = notification.withChannel(channel);
 
-        log.info("Dispatching notification: id={}", messageId);
+        log.info("Dispatching notification: id={}, channel={}", messageId, channel);
+
+        var enrichments = routed.rules().entrySet().stream()
+                .filter(entry -> !"disabled".equalsIgnoreCase(entry.getValue()))
+                .filter(entry -> entry.getKey().startsWith("transform."))
+                .map(entry -> applyTransformer(entry, routed))
+                .toList();
+
+        log.info("Applied {} enrichment rules for id={}: {}", enrichments.size(), messageId, enrichments);
+
+        if (!channelService.isKnownChannel(channel)) {
+            log.warn("No sender available for channel '{}', id={}", channel, messageId);
+            recordLog(messageId, routed, NotificationStatus.FAILED,
+                    "No sender available for channel: " + channel);
+            return NotificationResult.failure("No sender available for channel: " + channel);
+        }
+
+        if (!channelService.isEnabled(channel)) {
+            log.warn("Channel '{}' service is disabled; blocking notification id={}", channel, messageId);
+            recordLog(messageId, routed, NotificationStatus.BLOCKED,
+                    "Notification service for channel '" + channel + "' is disabled");
+            return NotificationResult.failure(
+                    "Notification service for channel '" + channel + "' is disabled");
+        }
 
         try {
-            var enrichments = notification.rules().entrySet().stream()
-                    .filter(entry -> !"disabled".equalsIgnoreCase(entry.getValue()))
-                    .filter(entry -> entry.getKey().startsWith("transform."))
-                    .map(entry -> applyTransformer(entry, notification))
-                    .toList();
+            NotificationSender sender = channelService.getSender(channel)
+                    .orElseThrow(() -> new ChannelNotSupportedException(
+                            "No sender available for channel: " + channel));
+            sender.send(routed);
 
-            log.info("Applied {} enrichment rules for id={}: {}", enrichments.size(), messageId, enrichments);
-
-            sender.send(notification.withChannel(defaultChannel));
-
+            recordLog(messageId, routed, NotificationStatus.SENT, null);
             return NotificationResult.success(messageId);
         } catch (Exception e) {
             log.error("Failed to dispatch notification: id={}, error={}", messageId, e.getMessage(), e);
-
+            recordLog(messageId, routed, NotificationStatus.FAILED, e.getMessage());
             return NotificationResult.failure("Failed to send notification: " + e.getMessage());
+        }
+    }
+
+    private String resolveChannel(Notification notification) {
+        String channel = notification.channel();
+        if (channel == null || channel.isBlank()) {
+            channel = defaultChannel;
+        }
+        return channel.toLowerCase();
+    }
+
+    private void recordLog(String messageId, Notification notification,
+                           NotificationStatus status, String errorMessage) {
+        try {
+            NotificationLog entry = new NotificationLog(messageId, notification, status.name());
+            if (errorMessage != null) {
+                entry.setErrorMessage(errorMessage);
+            }
+            logRepository.save(entry);
+        } catch (Exception e) {
+            log.error("Failed to persist notification log for id={}: {}", messageId, e.getMessage(), e);
         }
     }
 

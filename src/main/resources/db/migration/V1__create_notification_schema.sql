@@ -1,5 +1,5 @@
 -- NotificationTemplate table for storing notification templates
-CREATE TABLE IF NOT EXISTS notification_template (
+CREATE TABLE notification_template (
     id BIGSERIAL PRIMARY KEY,
     channel VARCHAR(50) NOT NULL,
     template_code VARCHAR(100) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS notification_template (
 );
 
 -- NotificationLog table for audit trail
-CREATE TABLE IF NOT EXISTS notification_log (
+CREATE TABLE notification_log (
     id BIGSERIAL PRIMARY KEY,
     notification_id VARCHAR(100) NOT NULL,
     recipient VARCHAR(255) NOT NULL,
@@ -26,6 +26,6 @@ CREATE TABLE IF NOT EXISTS notification_log (
 );
 
 -- Indices for efficient querying
-CREATE INDEX IF NOT EXISTS idx_notification_log_recipient ON notification_log(recipient);
-CREATE INDEX IF NOT EXISTS idx_notification_log_status_sent_at ON notification_log(status, sent_at);
-CREATE INDEX IF NOT EXISTS idx_notification_log_notification_id ON notification_log(notification_id);
+CREATE INDEX idx_notification_log_recipient ON notification_log(recipient);
+CREATE INDEX idx_notification_log_status_sent_at ON notification_log(status, sent_at);
+CREATE INDEX idx_notification_log_notification_id ON notification_log(notification_id);

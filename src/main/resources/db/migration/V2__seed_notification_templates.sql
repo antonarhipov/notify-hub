@@ -1,5 +1,4 @@
 -- Sample notification templates for demonstration
--- These will be loaded on application startup
 
 -- Email templates
 INSERT INTO notification_template (channel, template_code, subject_template, body_template, locale, active, created_at, updated_at)

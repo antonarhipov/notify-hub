@@ -35,7 +35,7 @@ public interface NotificationTemplateRepository extends JpaRepository<Notificati
     //DEMO Type: "FROM notif" and see 'notification_template' table suggested
     //DEMO Type: "WHERE temp" and see 'template_code' column suggested
     //DEMO Introduce typo like "template_cod" to see red squiggle validation error
-    //DEMO Ctrl+Click on 'notification_template' to navigate to schema.sql
+    //DEMO Ctrl+Click on 'notification_template' to navigate to the Flyway migration (V1__create_notification_schema.sql)
     /**
      * Native SQL query demonstrating table and column autocomplete.
      * IntelliJ will provide autocomplete for:

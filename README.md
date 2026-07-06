@@ -198,7 +198,7 @@ GET /api/health
 
 3. **Schema Navigation**
    - Ctrl+Click on `notification_template` in query
-   - Navigates to `schema.sql` DDL definition
+   - Navigates to the Flyway migration `db/migration/V1__create_notification_schema.sql` DDL definition
    - Or opens database tool window with table structure
 
 4. **Database Tool Window**
@@ -271,7 +271,7 @@ Audit log for sent notifications.
 
 ## Sample Templates
 
-The application seeds sample templates in `data.sql`:
+The application seeds sample templates via the Flyway migration `db/migration/V2__seed_notification_templates.sql`:
 
 - **Email**: welcome (en, es), password-reset (en)
 - **SMS**: welcome (en), verification-code (en)
