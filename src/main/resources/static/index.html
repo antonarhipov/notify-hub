@@ -80,6 +80,53 @@
             <p class="empty">Loading services…</p>
         </div>
     </section>
+
+    <section class="panel test-panel">
+        <h2 class="panel-title">Send Test Notification</h2>
+        <p class="panel-hint">Dispatch a notification through the hub to verify
+            channels, templates and enrichment rules end to end.</p>
+        <form id="test-form" class="test-form" autocomplete="off">
+            <label class="field">
+                <span class="field-label">Recipient</span>
+                <input id="test-recipient" name="recipient" type="text"
+                       placeholder="user@example.com" required>
+            </label>
+
+            <div class="field-row">
+                <label class="field">
+                    <span class="field-label">Channel</span>
+                    <select id="test-channel" name="channel">
+                        <option value="">(default)</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span class="field-label">Locale</span>
+                    <input id="test-locale" name="locale" type="text" value="en">
+                </label>
+            </div>
+
+            <label class="field">
+                <span class="field-label">Template code</span>
+                <input id="test-template" name="templateCode" type="text"
+                       placeholder="welcome" required>
+            </label>
+
+            <label class="field">
+                <span class="field-label">Payload (JSON, optional)</span>
+                <textarea id="test-payload" name="payload" rows="3"
+                          placeholder='{"name": "Ada"}'></textarea>
+            </label>
+
+            <label class="field">
+                <span class="field-label">Rules (JSON, optional)</span>
+                <textarea id="test-rules" name="rules" rows="3"
+                          placeholder='{"transform.header": "Important Update"}'></textarea>
+            </label>
+
+            <button id="test-submit" class="btn" type="submit">Send Notification</button>
+            <p id="test-result" class="test-result" hidden></p>
+        </form>
+    </section>
 </main>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>

@@ -104,7 +104,24 @@
         });
     }
 
+    function updateChannelOptions(services) {
+        const select = el("test-channel");
+        if (!select) {
+            return;
+        }
+        const previous = select.value;
+        const channels = (services || []).map((s) => s.channel);
+        select.innerHTML = '<option value="">(default)</option>' +
+            channels.map((c) =>
+                '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + "</option>"
+            ).join("");
+        if (channels.indexOf(previous) !== -1) {
+            select.value = previous;
+        }
+    }
+
     function renderServices(services) {
+        updateChannelOptions(services);
         const list = el("service-list");
         list.innerHTML = "";
         if (!services || services.length === 0) {
@@ -161,6 +178,77 @@
         }
     }
 
+    function parseJsonField(node, label) {
+        const raw = (node.value || "").trim();
+        if (!raw) {
+            return undefined;
+        }
+        let parsed;
+        try {
+            parsed = JSON.parse(raw);
+        } catch (e) {
+            throw new Error(label + " must be valid JSON");
+        }
+        if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+            throw new Error(label + " must be a JSON object");
+        }
+        return parsed;
+    }
+
+    function setTestResult(message, isError) {
+        const node = el("test-result");
+        node.textContent = message;
+        node.classList.toggle("ok", !isError);
+        node.classList.toggle("err", Boolean(isError));
+        node.hidden = false;
+    }
+
+    async function sendTestNotification(event) {
+        event.preventDefault();
+        const submit = el("test-submit");
+
+        let body;
+        try {
+            body = {
+                recipient: el("test-recipient").value.trim(),
+                channel: el("test-channel").value || null,
+                templateCode: el("test-template").value.trim(),
+                locale: el("test-locale").value.trim() || "en",
+                payload: parseJsonField(el("test-payload"), "Payload"),
+                rules: parseJsonField(el("test-rules"), "Rules")
+            };
+        } catch (err) {
+            setTestResult(err.message, true);
+            return;
+        }
+
+        submit.disabled = true;
+        try {
+            const res = await fetch("/api/notify", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(body)
+            });
+            const text = await res.text();
+            const result = text ? JSON.parse(text) : null;
+
+            if (res.ok && result && result.success) {
+                setTestResult("Sent · id " + result.notificationId, false);
+                showToast("Notification dispatched");
+            } else {
+                const message = (result && result.message) || ("Request failed: " + res.status);
+                setTestResult(message, true);
+                showToast("Dispatch failed: " + message, true);
+            }
+            await loadStats();
+        } catch (err) {
+            setTestResult(err.message, true);
+            showToast("Dispatch failed: " + err.message, true);
+        } finally {
+            submit.disabled = false;
+        }
+    }
+
     async function loadStats() {
         const stats = await fetchJson(API + "/stats");
         renderStats(stats);
@@ -192,6 +280,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
         el("refresh-btn").addEventListener("click", refreshAll);
+        el("test-form").addEventListener("submit", sendTestNotification);
         refreshAll();
         setInterval(refreshAll, REFRESH_MS);
     });

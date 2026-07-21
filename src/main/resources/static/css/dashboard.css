@@ -377,6 +377,122 @@ body {
     cursor: progress;
 }
 
+.test-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.field-row {
+    display: flex;
+    gap: 14px;
+}
+
+.field-row .field {
+    flex: 1 1 0;
+}
+
+@media (max-width: 560px) {
+    .field-row {
+        flex-direction: column;
+    }
+}
+
+.field-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.test-form input,
+.test-form select,
+.test-form textarea {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    width: 100%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.test-form input::placeholder,
+.test-form textarea::placeholder {
+    color: var(--muted);
+    opacity: 0.7;
+}
+
+.test-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    text-transform: capitalize;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2393a0bd' d='M1 1.5h10L6 7z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 34px;
+}
+
+.test-form textarea {
+    resize: vertical;
+    min-height: 70px;
+    line-height: 1.5;
+    font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 13px;
+}
+
+.test-form input:focus,
+.test-form select:focus,
+.test-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(91, 140, 255, 0.22);
+}
+
+.test-form .btn {
+    margin-top: 4px;
+    width: 100%;
+    padding: 11px 16px;
+    font-weight: 600;
+}
+
+.test-form .btn:disabled {
+    opacity: 0.6;
+    cursor: progress;
+    filter: none;
+}
+
+.test-result {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    word-break: break-word;
+}
+
+.test-result.ok {
+    border-color: var(--green);
+    color: var(--green);
+}
+
+.test-result.err {
+    border-color: var(--red);
+    color: var(--red);
+}
+
 .toast {
     position: fixed;
     bottom: 24px;

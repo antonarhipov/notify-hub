@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,5 +68,34 @@ class DashboardControllerTest extends IntegrationTestBase {
     void toggleUnknownChannel_returnsNotFound() throws Exception {
         mockMvc.perform(post("/api/dashboard/services/carrier-pigeon/disable"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void addChannel_registersNewEnabledChannel() throws Exception {
+        mockMvc.perform(post("/api/dashboard/services")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"channel\":\"webhook\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.channel").value("webhook"))
+                .andExpect(jsonPath("$.enabled").value(true));
+
+        assertThat(channelService.isKnownChannel("webhook")).isTrue();
+        assertThat(channelService.isEnabled("webhook")).isTrue();
+    }
+
+    @Test
+    void addExistingChannel_returnsConflict() throws Exception {
+        mockMvc.perform(post("/api/dashboard/services")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"channel\":\"email\"}"))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void addBlankChannel_returnsBadRequest() throws Exception {
+        mockMvc.perform(post("/api/dashboard/services")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"channel\":\"  \"}"))
+                .andExpect(status().isBadRequest());
     }
 }

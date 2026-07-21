@@ -30,7 +30,8 @@ public class ChannelService {
                 .collect(Collectors.toMap(
                         s -> s.getChannel().toLowerCase(),
                         Function.identity(),
-                        (a, b) -> a));
+                        (a, b) -> a,
+                        ConcurrentHashMap::new));
         this.sendersByChannel.keySet().forEach(channel -> enabledByChannel.put(channel, true));
         log.info("Registered notification channels: {}", enabledByChannel.keySet());
     }
@@ -72,6 +73,31 @@ public class ChannelService {
         enabledByChannel.put(key, enabled);
         log.info("Channel '{}' {}", key, enabled ? "ENABLED" : "DISABLED");
         return new ServiceStatus(key, enabled);
+    }
+
+    /**
+     * Register a brand-new notification channel type at runtime.
+     * <p>
+     * The channel is backed by a {@link GenericNotificationSender} and starts
+     * enabled, so it is immediately routable by the dispatcher.
+     *
+     * @param channel the channel identifier to add
+     * @return the resulting {@link ServiceStatus}
+     * @throws IllegalArgumentException      if the channel name is blank
+     * @throws ChannelAlreadyExistsException if the channel is already known
+     */
+    public ServiceStatus registerChannel(String channel) {
+        if (channel == null || channel.isBlank()) {
+            throw new IllegalArgumentException("Channel name must not be blank");
+        }
+        String key = channel.trim().toLowerCase();
+        NotificationSender existing = sendersByChannel.putIfAbsent(key, new GenericNotificationSender(key));
+        if (existing != null) {
+            throw new ChannelAlreadyExistsException("Notification channel already exists: " + key);
+        }
+        enabledByChannel.put(key, true);
+        log.info("Registered new notification channel '{}'", key);
+        return new ServiceStatus(key, true);
     }
 
     /**

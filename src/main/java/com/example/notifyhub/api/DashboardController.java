@@ -2,6 +2,7 @@ package com.example.notifyhub.api;
 
 import com.example.notifyhub.model.DashboardStats;
 import com.example.notifyhub.model.ServiceStatus;
+import com.example.notifyhub.service.ChannelAlreadyExistsException;
 import com.example.notifyhub.service.ChannelNotSupportedException;
 import com.example.notifyhub.service.ChannelService;
 import com.example.notifyhub.service.DashboardService;
@@ -47,6 +48,18 @@ public class DashboardController {
     }
 
     /**
+     * Register a new notification channel type.
+     * POST /api/dashboard/services
+     * Body: {"channel": "webhook"}
+     */
+    @PostMapping("/services")
+    public ResponseEntity<ServiceStatus> addChannel(@RequestBody AddChannelRequest request) {
+        String channel = request == null ? null : request.channel();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(channelService.registerChannel(channel));
+    }
+
+    /**
      * Enable the service for a channel.
      * POST /api/dashboard/services/{channel}/enable
      */
@@ -80,9 +93,25 @@ public class DashboardController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    @ExceptionHandler(ChannelAlreadyExistsException.class)
+    public ResponseEntity<String> handleDuplicateChannel(ChannelAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleBadRequest(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
     /**
      * Request body for explicitly setting a channel service state.
      */
     public record ServiceToggleRequest(boolean enabled) {
+    }
+
+    /**
+     * Request body for registering a new notification channel type.
+     */
+    public record AddChannelRequest(String channel) {
     }
 }
