@@ -16,10 +16,14 @@ fun footerLine(footer: String, notification: Notification): String {
 
 /** Short, log-friendly label: channel and a masked recipient. */
 val Notification.routingLabel: String
-    get() = "${channel() ?: "default"} -> ${recipient().maskedEmail()}"
+    get() = "${channel() ?: "default"} -> ${maskEmail(recipient())}"
 
-/** Masks the local part of an e-mail address: "jane@example.com" -> "j***@example.com". */
-fun String.maskedEmail(): String {
-    val at = indexOf('@')
-    return if (at <= 1) this else "${first()}***${substring(at)}"
+/**
+ * Masks the local part of an e-mail address so it can be logged safely:
+ * "jane@example.com" becomes "j***@example.com".
+ * Values without a usable local part are returned unchanged.
+ */
+fun maskEmail(address: String): String {
+    val at = address.indexOf('@')
+    return if (at <= 1) address else "${address.first()}***${address.substring(at)}"
 }

@@ -1,6 +1,7 @@
 package com.example.notifyhub.service;
 
 import com.example.notifyhub.model.Notification;
+import com.example.notifyhub.text.MessageDecorations;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +26,12 @@ public class EmailNotificationSender implements NotificationSender {
         }
 
         log.info("Sending EMAIL notification to: {} with template: {}",
-                notification.recipient(), notification.templateCode());
+                MessageDecorations.maskEmail(notification.recipient()), notification.templateCode());
 
         // Simulate email sending
         log.debug("Email details - Locale: {}, Payload: {}",
                 notification.locale(), notification.payload());
-        log.info("EMAIL notification sent successfully to: {}", notification.recipient());
+        log.info("EMAIL notification sent successfully to: {}", MessageDecorations.maskEmail(notification.recipient()));
     }
 
     @Override

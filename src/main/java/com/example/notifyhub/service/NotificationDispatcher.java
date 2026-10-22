@@ -6,6 +6,7 @@ import com.example.notifyhub.model.NotificationResult;
 import com.example.notifyhub.model.NotificationStatus;
 import com.example.notifyhub.repository.NotificationLogRepository;
 import com.example.notifyhub.service.transformers.MessageTransformer;
+import com.example.notifyhub.text.MessageDecorations;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,8 @@ public class NotificationDispatcher {
         String channel = resolveChannel(notification);
         Notification routed = notification.withChannel(channel);
 
-        log.info("Dispatching notification: id={}, channel={}", messageId, channel);
+        log.info("Dispatching notification: id={}, channel={}, to={}",
+                messageId, channel, MessageDecorations.maskEmail(routed.recipient()));
 
         var enrichments = routed.rules().entrySet().stream()
                 .filter(entry -> entry.getValue() != "disabled")
