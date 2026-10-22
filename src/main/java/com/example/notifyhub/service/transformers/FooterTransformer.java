@@ -1,6 +1,7 @@
 package com.example.notifyhub.service.transformers;
 
 import com.example.notifyhub.model.Notification;
+import com.example.notifyhub.text.MessageDecorations;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class FooterTransformer implements MessageTransformer {
 
     @Override
     public String apply(String value, Notification notification) {
-        log.debug("Appending footer '{}' for {}", value, notification.recipient());
-        return "Appended footer: " + value;
+        log.debug("Appending footer '{}' for {}", value, MessageDecorations.getRoutingLabel(notification));
+        return MessageDecorations.footerLine(value, notification);
     }
 }
