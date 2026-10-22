@@ -74,7 +74,7 @@ public class NotificationDispatcher {
         log.info("Dispatching notification: id={}, channel={}", messageId, channel);
 
         var enrichments = routed.rules().entrySet().stream()
-                .filter(entry -> !"disabled".equalsIgnoreCase(entry.getValue()))
+                .filter(entry -> entry.getValue() != "disabled")
                 .filter(entry -> entry.getKey().startsWith("transform."))
                 .map(entry -> applyTransformer(entry, routed))
                 .toList();
