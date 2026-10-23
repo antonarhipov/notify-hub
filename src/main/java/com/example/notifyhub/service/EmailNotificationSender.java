@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
  * Demonstrates IntelliJ IDEA's bean navigation - this is one of multiple NotificationSender implementations.
  * Gutter icon on the class will show it implements NotificationSender interface.
  */
-//DEMO Bean Navigation - Gutter icon on class shows it implements NotificationSender
-//DEMO Click gutter icon to navigate to interface and see all 3 implementations
 @Service
 @Slf4j
 public class EmailNotificationSender implements NotificationSender {
