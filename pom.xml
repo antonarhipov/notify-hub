@@ -29,6 +29,8 @@
     <properties>
         <java.version>21</java.version>
         <testcontainers.version>1.19.3</testcontainers.version>
+        <!-- Override Spring Boot's managed Lombok (1.18.42), which crashes javac 27 -->
+        <lombok.version>1.18.48</lombok.version>
         <!-- kotlin.version is managed by the Spring Boot parent -->
     </properties>
     <dependencies>
