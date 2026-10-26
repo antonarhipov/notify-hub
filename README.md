@@ -38,7 +38,7 @@ It also doubles as a demo project for IntelliJ IDEA Ultimate features (bean navi
 ├── Dockerfile                   # Multi-stage build: JDK 21 build -> JRE 21 runtime
 ├── docker-compose.yaml          # postgres, api, web (nginx) and a deliberately failing "broken" service
 ├── nginx/nginx.conf             # Reverse proxy: port 8080 -> api:8080
-├── demo-test.sh                 # curl-based smoke script for the notification API
+├── demo-test.sh                 # curl smoke script (predates Basic auth: add `-u admin:admin` to its curl calls)
 └── src
     ├── main
     │   ├── java/com/example/notifyhub
@@ -198,7 +198,8 @@ Other outcomes:
 | `403`  | Authenticated, but without the `ADMIN` role                                              |
 
 **Rules.** Rules whose key starts with `transform.` are applied by the matching `MessageTransformer`
-(`header`, `footer`, `style`). A rule whose value is `disabled` is skipped. Rules never influence which channel is used.
+(`header`, `footer`, `style`). A rule whose value is `disabled` is meant to be skipped (see the known issue under
+[Testing](#testing)). Rules never influence which channel is used.
 
 ### Health check
 
@@ -235,7 +236,7 @@ Configuration lives in `src/main/resources`.
 | `notifyhub.rate-limit`                | `50` (`200` in `prod`)          | Rate limit value                               |
 | `notifyhub.retry.max-attempts`        | `3`                             | Retry attempts                                 |
 | `notifyhub.security.admin.username`   | `${ADMIN_USERNAME:admin}`       | Admin user for the notification API            |
-| `notifyhub.security.admin.password`    | `${ADMIN_PASSWORD:admin}`       | Admin password for the notification API        |
+| `notifyhub.security.admin.password`   | `${ADMIN_PASSWORD:admin}`       | Admin password for the notification API        |
 
 Any property can be overridden through environment variables, for example `NOTIFYHUB_RATE_LIMIT=100`.
 
@@ -300,17 +301,22 @@ Audit log of every dispatch attempt.
 ./mvnw test
 ```
 
-- **Integration tests** (`NotificationControllerSecurityTest`, `DashboardIntegrationTest`,
-  `NotificationTemplateRepositoryTest`, `NotifyHubApplicationTests`) extend `IntegrationTestBase`, which starts a
-  `postgres:16-alpine` Testcontainer once per JVM and wires it in with `@ServiceConnection`. Flyway migrations run
-  against real PostgreSQL. **Docker must be running.**
-- **Unit tests** (`NotificationDispatcherTest`, `DashboardControllerTest`) need no database.
+- **Integration tests** (`NotifyHubApplicationTests`, `NotificationControllerSecurityTest`,
+  `DashboardControllerTest`, `DashboardIntegrationTest`, `NotificationTemplateRepositoryTest`) extend
+  `IntegrationTestBase`, which starts a `postgres:16-alpine` Testcontainer once per JVM and wires it in with
+  `@ServiceConnection`. Flyway migrations run against real PostgreSQL. **Docker must be running.**
+- **Unit tests** (`NotificationDispatcherTest`) use Mockito only and need neither a database nor Docker.
 
 Run a single test class:
 
 ```bash
 ./mvnw test -Dtest=NotificationDispatcherTest
 ```
+
+> **Known issue**: `NotificationDispatcherTest.skipsDisabledRules` currently fails. `NotificationDispatcher` compares
+> the rule value with `!=` (reference comparison) instead of `equals`, so rules whose value is `disabled` are still
+> applied. This is a deliberately planted bug used in the debugging demo (see the git history); the other tests
+> are expected to pass.
 
 ## IntelliJ IDEA demo scenarios
 
@@ -363,7 +369,8 @@ property appears in Java as `MessageDecorations.getRoutingLabel(...)`. Kotlin is
 ## Troubleshooting
 
 ### `ExceptionInInitializerError: com.sun.tools.javac.tree.EndPosTable`
-Lombok is too old for your JDK. Keep the `<lombok.version>` override in `pom.xml` (1.18.48) or use JDK 21-25.
+Lombok is too old for your JDK. The Lombok version managed by Spring Boot 4.0.2 (1.18.42) fails on JDK 27, so keep the
+`<lombok.version>1.18.48</lombok.version>` override in `pom.xml`.
 
 ### Tests fail with Docker or Testcontainers errors
 The integration tests start a PostgreSQL container, so Docker must be running. Use `./mvnw -DskipTests package`
